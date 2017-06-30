@@ -45,28 +45,6 @@ class TCPCheckTest(AgentCheckTest):
     def tearDown(self):
         self.check.stop()
 
-    def wait_for_async(self, method, attribute, count):
-        """
-        Loop on `self.check.method` until `self.check.attribute >= count`.
-
-        Raise after
-        """
-
-        # Check the initial values to see if we already have results before waiting for the async
-        # instances to finish
-        initial_values = getattr(self, attribute)
-
-        i = 0
-        while i < RESULTS_TIMEOUT:
-            self.check._process_results()
-            if len(getattr(self.check, attribute)) + len(initial_values) >= count:
-                return getattr(self.check, method)() + initial_values
-            time.sleep(1.1)
-            i += 1
-        raise Exception("Didn't get the right count of service checks in time, {0}/{1} in {2}s: {3}"
-                        .format(len(getattr(self.check, attribute)), count, i,
-                                getattr(self.check, attribute)))
-
     def test_event_deprecation(self):
         """
         Deprecate events usage for service checks.
@@ -75,7 +53,7 @@ class TCPCheckTest(AgentCheckTest):
         self.run_check(CONFIG)
 
         # Overrides self.service_checks attribute when values are available
-        self.warnings = self.wait_for_async('get_warnings', 'warnings', len(CONFIG['instances']))
+        self.warnings = self.wait_for_async('get_warnings', 'warnings', len(CONFIG['instances']), RESULTS_TIMEOUT)
 
         # Assess warnings
         self.assertWarning(
