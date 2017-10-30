@@ -24,7 +24,7 @@ namespace :ci do
       Rake::Task['ci:common:install'].invoke('kafka_consumer')
       sh %(EXTERNAL_PORT=9092 EXTERNAL_JMX_PORT=9999 CONSUMER_OFFSET_STORAGE=#{kafka_consumer_options} KAFKA_TOPICS=#{kafka_topics} \
            ZOOKEEPER_VERSION=#{zookeeper_version} \
-           docker-compose -f #{ENV['TRAVIS_BUILD_DIR']}/kafka_consumer/ci/resources/docker-compose-single-broker.yml up -d)
+           docker-compose -f #{ENV['SDK_HOME']}/kafka_consumer/test/ci/resources/docker-compose-single-broker.yml up -d)
       Wait.for 2181
       Wait.for 9092
       wait_on_docker_logs('resources_kafka_1', 20, '[Kafka Server 1001], started')
@@ -33,7 +33,7 @@ namespace :ci do
       wait_on_docker_logs('resources_kafka_1', 20, 'Created topic "dc"')
       sh %(EXTERNAL_PORT=9091 EXTERNAL_JMX_PORT=9998 CONSUMER_OFFSET_STORAGE=#{kafka_consumer_options} KAFKA_TOPICS=#{kafka_topics} \
            ZOOKEEPER_VERSION=#{zookeeper_version} \
-           docker-compose -f #{ENV['TRAVIS_BUILD_DIR']}/kafka/ci/resources/docker-compose-single-broker.yml scale kafka=2)
+           docker-compose -f #{ENV['SDK_HOME']}/kafka_consumer/test/ci/resources/docker-compose-single-broker.yml scale kafka=2)
       wait_on_docker_logs('resources_kafka_2', 20, '[Kafka Server 1002], started')
     end
 
@@ -53,9 +53,9 @@ namespace :ci do
 
     task cleanup: ['ci:common:cleanup'] do
       sh %(EXTERNAL_PORT=9092 EXTERNAL_JMX_PORT=9999 docker-compose -f \
-           #{ENV['TRAVIS_BUILD_DIR']}/kafka_consumer/ci/resources/docker-compose-single-broker.yml stop)
+           #{ENV['SDK_HOME']}/kafka_consumer/test/ci/resources/docker-compose-single-broker.yml stop)
       sh %(EXTERNAL_PORT=9092 EXTERNAL_JMX_PORT=9999 docker-compose -f \
-           #{ENV['TRAVIS_BUILD_DIR']}/kafka_consumer/ci/resources/docker-compose-single-broker.yml rm -f)
+           #{ENV['SDK_HOME']}/kafka_consumer/test/ci/resources/docker-compose-single-broker.yml rm -f)
     end
 
     task :execute do
