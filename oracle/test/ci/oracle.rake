@@ -25,7 +25,7 @@ namespace :ci do
     task before_install: ['ci:common:before_install'] do
       sh %(pip install pexpect==4.2.1)
       sh %(mkdir -p #{ENV['ORACLE_DIR']})
-      sh %(#{ENV['TRAVIS_BUILD_DIR']}/oracle/ci/resources/get_instantclient.py --agree=yes)
+      sh %(#{ENV['SDK_HOME']}/oracle/test/ci/resources/get_instantclient.py --agree=yes)
       sh %(echo #{ENV['ORACLE_HOME']} | sudo tee /etc/ld.so.conf.d/oracle_instantclient.conf)
       sh %(sudo ldconfig)
       unless File.exist?("#{ENV['ORACLE_HOME']}/libclntsh.so")
