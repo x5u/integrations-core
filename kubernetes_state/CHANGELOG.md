@@ -1,5 +1,12 @@
 # CHANGELOG - kubernetes_state
 
+1.4.0 / Unreleased
+==================
+
+### Changes
+
+* [FEATURE] Add metrics for GPU, PVC, CronJobs and other added in kubernetes_state 1.1.0. See [#853][]
+
 1.3.0 / 2017-08-28
 ==================
 
