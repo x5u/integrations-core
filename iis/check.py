@@ -67,12 +67,17 @@ class IIS(WinWMICheck):
         instance_tags = instance.get('tags', [])
         sites = instance.get('sites', ['_Total'])
         is_2008 = _is_affirmative(instance.get('is_2008', False))
+        normalize_counts = _is_affirmative(instance.get('normalize_counts', True))
 
         instance_hash = hash_mutable(instance)
         instance_key = self._get_instance_key(host, self.NAMESPACE, self.CLASS, instance_hash)
         filters = map(lambda x: {"Name": tuple(('=', x))}, sites)
 
-        metrics_by_property, properties = self._get_wmi_properties(instance_key, self.METRICS, [])
+        metrics = self.METRICS
+        if normalize_counts is False:
+            metrics = [(wmi_property, metric_name, 'monotonic_count' if metric_type == 'rate' else metric_type)
+            for wmi_property, metric_name, metric_type in metrics]
+        metrics_by_property, properties = self._get_wmi_properties(instance_key, metrics, [])
 
         if is_2008:
             for idx, prop in enumerate(properties):

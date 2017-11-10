@@ -38,6 +38,11 @@ instances:
                       # where perfmon reports TotalBytesTransferred as
                       # TotalBytesTransfered, you may have to enable this
                       # to grab the IIS metrics in that environment.
+      normalize_counts: false  # Normalize the deltas of the WMI performance
+                               # counters to per second rates before
+                               # submission. Setting this to false allows
+                               # these metrics to be plotted either as counts
+                               # or normalized rates.
   #   tags:
   #     - myapp2
   #     - east
